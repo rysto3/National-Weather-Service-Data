@@ -37,5 +37,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: 'nws-zones.json'
-          tag_name: ${{ steps.newtag.outputs.new_tag }}
+          tag: ${{ steps.newtag.outputs.new_tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
