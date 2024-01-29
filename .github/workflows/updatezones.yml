@@ -1,25 +1,33 @@
-name: Update and release zones
+name: Update NWS Zones and Release
+
 on:
+  schedule:
+    - cron: '0 */48 * * *'  # Every 48 hours
   workflow_dispatch:
+
 jobs:
-  update:
+  update-and-release:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Fetch zones from API
-        run: curl -o zones.json https://api.weather.gov/zones?include_geometry=false
-      - name: Commit and push changes
+
+      - name: Fetch NWS zones data
+        run: |
+          curl -o nws-zones.json https://api.weather.gov/zones?include_geometry=false
+
+      - name: Commit updated zones file
         uses: EndBug/add-and-commit@v7
         with:
-          add: 'zones.json'
-          message: 'Update zones'
+          add: 'nws-zones.json'
+          message: 'Update NWS zones data'
           push: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Create release
+
+      - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: 'zones.json'
-          bodyFile: 'body.md'
+          artifacts: 'nws-zones.json'
           token: ${{ secrets.GITHUB_TOKEN }}
