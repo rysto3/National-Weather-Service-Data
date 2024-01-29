@@ -1,7 +1,5 @@
 name: Update and release zones
 on:
-  schedule:
-    - cron: '0 0 */2 * *' # every 48 hours
   workflow_dispatch:
 jobs:
   update:
