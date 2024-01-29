@@ -26,8 +26,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create a new tag
+        id: newtag
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          default_bump: patch
+
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: 'nws-zones.json'
+          tag_name: ${{ steps.newtag.outputs.new_tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
