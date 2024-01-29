@@ -1,0 +1,26 @@
+name: Update and release zones
+on:
+  schedule:
+    - cron: '0 0 */2 * *' # every 48 hours
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Fetch zones from API
+        run: curl -o zones.json https://api.weather.gov/zones?include_geometry=false
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: 'zones.json'
+          message: 'Update zones'
+          push: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: 'zones.json'
+          bodyFile: 'body.md'
+          token: ${{ secrets.GITHUB_TOKEN }}
